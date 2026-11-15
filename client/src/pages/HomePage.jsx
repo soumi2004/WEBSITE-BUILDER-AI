@@ -8,19 +8,25 @@ import { Trash2Icon } from "lucide-react";
 import { ArrowRightIcon } from "lucide-react";
 import moment from "moment";
 
+// Home - Page UI
 const HomePage = () => {
 
+   // useNavigate lets us move to another page 
   const navigate = useNavigate()
 
-
+   // user data and project-related functions from AppContext
 const{user, projects, loadingProjects, generatingProject, loadProjects, handleGenerate,
   handleDelete, logout} = useAppContext()
 
+  // load users projects 
        useEffect(()=>{
         loadProjects()
        },[loadProjects])
 
   return (
+
+      // Main container of the home page.
+    
     <div className="h-screen overflow-y-scroll text-white font-sans bg-[url('/bg-img.png')]
     bg-cover bg-center bg-no-repeat">
       {/* Nav */}
@@ -30,7 +36,7 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                  <span className='text-xl font-semibold tracking-tight'>BuilderAI</span>
              </div>
              <div className='flex items-center gap-4 text-sm font-medium text-zinc-300'>
-              <span>{user?.name}</span>
+              <span>{user?.name}</span>   {/* Shows the logged-in user's name. */}
                 <button onClick={logout} className='py-1.5 px-3 border border-white/20 text-white hover:bg-white/
                 10 text-xs rounded-md cursor-pointer bg-transparent'>
                   Sign out
