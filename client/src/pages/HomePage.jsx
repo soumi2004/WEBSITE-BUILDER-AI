@@ -18,7 +18,8 @@ const HomePage = () => {
 const{user, projects, loadingProjects, generatingProject, loadProjects, handleGenerate,
   handleDelete, logout} = useAppContext()
 
-  // load users projects 
+  // load users projects when the home page opens.
+  // loadProjects is added as a dependency so React can track changes to it 
        useEffect(()=>{
         loadProjects()
        },[loadProjects])
@@ -29,14 +30,17 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
     
     <div className="h-screen overflow-y-scroll text-white font-sans bg-[url('/bg-img.png')]
     bg-cover bg-center bg-no-repeat">
-      {/* Nav */}
+      {/* NavBar - Shows the app logo , username and sign-out button  */}
           <nav className="sticky top-0 z-10 flex items-center justify-between px-6 py-4">
              <div className="flex items-center gap-2">
                  <img src="/logo.svg" alt="logo" className='size-6'/>
                  <span className='text-xl font-semibold tracking-tight'>BuilderAI</span>
              </div>
              <div className='flex items-center gap-4 text-sm font-medium text-zinc-300'>
-              <span>{user?.name}</span>   {/* Shows the logged-in user's name. */}
+              <span>{user?.name}</span>   {/* Shows the logged-in user's name.
+              ?- its prevents an error if user data is not available yet. */}
+              
+              {/* this is Sign Out function */}
                 <button onClick={logout} className='py-1.5 px-3 border border-white/20 text-white hover:bg-white/
                 10 text-xs rounded-md cursor-pointer bg-transparent'>
                   Sign out
@@ -44,7 +48,7 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
              </div>
           </nav>
 
-          {/* Hero */}
+          {/* Hero - The main welcome area of home page  */}
               <div className="flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-8
               xl:mt-28">
                 <div className="w-full max-w-2xl flex flex-col items-center">
@@ -68,6 +72,9 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                   </p>
 
                   {/* Prompt input with glassmorphic variant */}
+                  {/* PROMPT INPUT -  users write their idea to create a website.
+                  onSubmit sends the idea to handleGenerate.
+                  loading shows the project is generating. */}
                   <div className='w-full mt-6'>
                    <PromptInput
                    onSubmit={handleGenerate}
@@ -80,6 +87,9 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                  {/* Scrolling Marquee tags */}
                 <div className="masked-marquee w-full mt-4 max-w-2xl overflow-hidden py-1">
                  <div className="animate-marquee gap-3">
+                  {/* Suggested Prompts - shows ready made idea to the users.
+                  map() creates one button for each ideas in hometags. The button sends the idea to handleGenerate. button are 
+                  disabled during generating project */}
                    {homeTags.map((tag, i) => (
                     <button key={i}
                       onClick={() => handleGenerate(tag)}
@@ -92,7 +102,8 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                      </div>
                   </div>
 
-                 {/* All Projects */}
+                 {/* All Projects - shows the project created by logged-in-user. This section
+                 appears when loading is finished and at least one projects available. */}
                   {!loadingProjects && projects?.length > 0 && (
                    <div className="mt-12 w-full">
                        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
@@ -106,17 +117,23 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                        </div>
 
                             <div className="space-y-2 max-h-[80vh] overflow-y-auto pr-1">
+                              {/* PROJECT LIST - map() creates a separate card for every project.
+                               Each card shows the project name, update time and version. */}
                            {projects.map((p)=>(
-                            <div key={p._id} className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 
+                            <div key={p._id} className="bg-white/5 border border-white/10 rounded-lg px-4 py-3
                             flex items-center justify-between group 
                             hover:border-white/20 
                             hover:bg-white/10 cursor-pointer backdrop-blur-md transition-all"
+                            // p._id- projects unique id 
+                            // when the user click a project card navigate to its builder page using its project Id.
                             onClick={()=> navigate(`/builder/${p._id}`)}>
                               <div className="flex-1 min-w-0">
                                  <p className="text-sm font-medium text-white truncate">{p.name}</p>
                                  <div className="flex items-center gap-3 mt-0.5">
                                    <span>
-                                    <ClockIcon size={10}/>
+                                    {/* Shows when the project was last updated. */}
+                                    <ClockIcon size={10}/> 
+                                    {/* Convert the project date into a readable format */}
                                     {moment(p.updatedAt || p.createdAt).fromNow()}
                                    </span>
                                    <span className= "text-xs text-white/60 font-medium">v{p.version}</span>
@@ -124,6 +141,8 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                               </div>
                                   
                               <div className="flex items-center gap-2">
+                                {/* Delete Button - Deletes the selected projects using its ID.
+                                stopPropagation - its prevents the card click event from running */}
                                   <button
                                      type="button"
                                      onClick={(e) => {
@@ -135,8 +154,10 @@ const{user, projects, loadingProjects, generatingProject, loadProjects, handleGe
                                 title="Delete project"
                                 aria-label="Delete project"
                                    >
+                                    {/* Trash icon - Used for deleting a project. */}
                                     <Trash2Icon size={14} />
                                    </button>
+                                   {/* Arrow icon - Shows that the project can be opened. */}
                                   <ArrowRightIcon size={14} className="text-zinc-200
                                   group-hover:text-white"/>
                               </div>

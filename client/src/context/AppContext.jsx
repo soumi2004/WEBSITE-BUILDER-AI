@@ -195,7 +195,8 @@ export function AppContextProvider({ children }) {
     loadProjects,
     loadProject,
     handleGenerate,
-    handleDelete
+    handleDelete,
+    logout
     }}>  
        {/*children mna holo provider ar vitora jasob component rakha hobe */}
       {children}
